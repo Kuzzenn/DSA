@@ -1,4 +1,4 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 struct flightnode {
@@ -11,7 +11,7 @@ struct flightnode {
     flightnode *nextdeparture; 	
     flightnode *nextarrival; 	
 };
-//''new char[strlen(departCity)+1].''  for city names//
+//new char[strlen(departCity)+1].''  for city names//
 
 #define MAXCITY 30                
 struct citylistnode {
@@ -66,6 +66,8 @@ flight2->nextarrival = nullptr;
 
 // connection of flights from karachi
 flight1->nextdeparture = flight2;
+
+cout<<"ran successfully"<<endl;
 
     
     
