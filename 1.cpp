@@ -1,7 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
+#define MAXCITY 30
+#define MAXFLIGHT 100
+#define ROUNDTRIP 0
+#define ONEWAY 1
 //setting flight databse;
 
 struct flightnode {
@@ -15,8 +18,7 @@ struct flightnode {
     flightnode *nextarrival; 	
 };
 //new char[strlen(departCity)+1].''  for city names//
-
-#define MAXCITY 30                
+               
 struct citylistnode {
     char *cityname;           	   
     flightnode *nextdeparture;    
@@ -28,7 +30,7 @@ struct citylistnode {
 
 
 
-#define MAXFLIGHT 100             
+             
 struct flightlistnode {
     int flightNo;             
     flightnode *flight;        
@@ -178,6 +180,18 @@ reservationNode* MakeReserveNode(const char *firstName, const char *lastName, in
     newNode->nextReserve = nullptr;
     return newNode;
 }
+
+void AddReservation(const char *firstName, const char *lastName, int tripType, const routeNode &routeForward, const routeNode &routeBack) {
+    reservationNode *newReservation = MakeReserveNode(firstName, lastName, tripType, routeForward, routeBack);
+    if (!reserveHead) {
+        reserveHead = reserveTail = newReservation;
+    } else {
+        reserveTail->nextReserve = newReservation;
+        reserveTail = newReservation;
+    }
+}
+
+
 
 
 
