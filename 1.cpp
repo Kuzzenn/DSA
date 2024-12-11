@@ -36,7 +36,20 @@ struct flightlistnode {
 
  flightlistnode flightlist[MAXFLIGHT];  
 
+struct routeNode {
+    int Day;
+    int nHops;
+    int FlightNo[10];
+};
 
+struct reservationNode {
+    char *firstName;
+    char *lastName;
+    int tripType;
+    routeNode routeForward;
+    routeNode routeBack;
+    reservationNode *nextReserve;
+};
 
  //hashing function
 
