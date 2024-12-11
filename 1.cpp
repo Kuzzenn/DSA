@@ -166,6 +166,18 @@ void displaycities() {
     }
 }
 
+reservationNode* MakeReserveNode(const char *firstName, const char *lastName, int tripType, const routeNode &routeForward, const routeNode &routeBack) {
+    reservationNode *newNode = new reservationNode;
+    newNode->firstName = new char[strlen(firstName) + 1];
+    strcpy(newNode->firstName, firstName);
+    newNode->lastName = new char[strlen(lastName) + 1];
+    strcpy(newNode->lastName, lastName);
+    newNode->tripType = tripType;
+    newNode->routeForward = routeForward;
+    newNode->routeBack = routeBack;
+    newNode->nextReserve = nullptr;
+    return newNode;
+}
 
 
 
