@@ -38,20 +38,11 @@ struct flightlistnode {
 
 
 
- //hashing function
 
- int Hash(const char *cityname) {
-    int hash = 0;
-    while (*cityname) {
-        hash = (hash + *cityname) % MAXCITY;
-        cityname++;
-    }
-    return hash;
-}
 
 //improvemnt if bigger dataset
-/*
-set max city to 31 odd to prevent collision 
+
+//set max city to 31 odd to prevent collision 
  int Hash(const char *cityName) {
     int hash = 0;
     while (*cityName) {
@@ -61,7 +52,7 @@ set max city to 31 odd to prevent collision
     return hash;
 }
 
-*/
+
 
 //adding city
 
@@ -158,46 +149,35 @@ void displaycities() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
 int main()
 {
     //option for admin to add city
-    // Hardcoded Cities
+    // Adding cities
     addcity("Karachi");
     addcity("Lahore");
     addcity("Islamabad");
     addcity("Quetta");
     addcity("Peshawar");
+    addcity("Skardu");
 
     
-   //making flights
-flightlist[0].flight = makeflightnode(101, "Karachi", 900, "Lahore", 1030);
-flightlist[1].flight = makeflightnode(102, "Karachi", 1200, "Islamabad", 1300);
-flightlist[2].flight = makeflightnode(103, "Lahore", 1400, "Quetta", 1530);
-flightlist[3].flight = makeflightnode(104, "Islamabad", 1800, "Peshawar", 1900);
-flightlist[4].flight = makeflightnode(105, "Quetta", 2000, "Karachi", 2100);
+    flightlist[0].flight = makeflightnode(101, "Karachi", 900, "Lahore", 1030);
+    flightlist[1].flight = makeflightnode(102, "Karachi", 1200, "Islamabad", 1300);
+    flightlist[2].flight = makeflightnode(103, "Karachi", 1400, "Peshawar", 1530);
+    flightlist[3].flight = makeflightnode(104, "Karachi", 1600, "Skardu", 1830);
+    flightlist[4].flight = makeflightnode(105, "Islamabad", 1100, "Peshawar", 1230);
+    flightlist[5].flight = makeflightnode(106, "Lahore", 1400, "Peshawar", 1600);
 
+    
+    flightlist[6].flight = makeflightnode(107, "Lahore", 1100, "Karachi", 1230);
+    flightlist[7].flight = makeflightnode(108, "Islamabad", 1400, "Karachi", 1500);
+    flightlist[8].flight = makeflightnode(109, "Peshawar", 1600, "Karachi", 1730);
+    flightlist[9].flight = makeflightnode(110, "Skardu", 1900, "Karachi", 2130);
+    flightlist[10].flight = makeflightnode(111, "Peshawar", 1300, "Islamabad", 1430);
+    flightlist[11].flight = makeflightnode(112, "Peshawar", 1700, "Lahore", 1900);
 
-    // Linking the flights 
-    for (int i = 0; i < 5; i++) {
+    
+    for (int i = 0; i < 12; i++) {
         linkflight(flightlist[i].flight);
     }
 
@@ -208,8 +188,11 @@ flightlist[4].flight = makeflightnode(105, "Quetta", 2000, "Karachi", 2100);
     displaydeparturelist("Karachi");
     displayarrivallist("Karachi");
 
-    return 0;
+    
+    displaydeparturelist("Skardu");
+    displayarrivallist("Skardu");
 
+    return 0;
     
     
 }
