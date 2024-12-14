@@ -191,6 +191,53 @@ void AddReservation(const char *firstName, const char *lastName, int tripType, c
     }
 }
 
+void PrintReservation(reservationNode *pReserve) {
+    if (!pReserve) {
+        cout << "No reservation found." << endl;
+        return;
+    }
+    cout << "Passenger Name: " << pReserve->firstName << " " << pReserve->lastName << endl;
+    cout << "Trip Type: " << (pReserve->tripType == ROUNDTRIP ? "Round Trip" : "One Way") << endl;
+    cout << "Forward Route Hops: " << pReserve->routeForward.nHops << endl;
+    if (pReserve->tripType == ROUNDTRIP) {
+        cout << "Return Route Hops: " << pReserve->routeBack.nHops << endl;
+    }
+    cout << "--------------------\n";
+}
+
+void PrintAllReservations() {
+    cout << "\nAll Reservations:\n";
+    cout << "=================\n";
+    reservationNode *current = reserveHead;
+    while (current) {
+        PrintReservation(current);
+        current = current->nextReserve;
+    }
+}
+
+void DeleteReservation(const char *firstName, const char *lastName) {
+    reservationNode *current = reserveHead, *prev = nullptr;
+    while (current) {
+        if (strcmp(current->firstName, firstName) == 0 && strcmp(current->lastName, lastName) == 0) {
+            if (prev) {
+                prev->nextReserve = current->nextReserve;
+            } else {
+                reserveHead = current->nextReserve;
+            }
+            if (current == reserveTail) {
+                reserveTail = prev;
+            }
+            delete[] current->firstName;
+            delete[] current->lastName;
+            delete current;
+            cout << "Reservation deleted successfully.\n";
+            return;
+        }
+        prev = current;
+        current = current->nextReserve;
+    }
+    cout << "Reservation not found.\n";
+}
 
 
 
