@@ -205,6 +205,43 @@ void PrintAllReservations() {
         current = current->nextReserve;
     }
 }
+void PrintPassengers(int flightNo) {
+    cout << "\nPassengers on Flight " << flightNo << ":\n";
+    cout << "===============================\n";
+    reservationNode *current = reserveHead;
+    bool found = false;
+    while (current) {
+        for (int i = 0; i < current->routeForward.nHops; i++) {
+            if (current->routeForward.FlightNo[i] == flightNo) {
+                cout << current->firstName << " " << current->lastName << endl;
+                found = true;
+                break;
+            }
+        }
+        current = current->nextReserve;
+    }
+    if (!found) {
+        cout << "No passengers found on this flight." << endl;
+    }
+}
+
+void PrintSchedule() {
+    char firstName[50], lastName[50];
+    cout << "Enter passenger's first name: ";
+    cin >> firstName;
+    cout << "Enter passenger's last name: ";
+    cin >> lastName;
+
+    reservationNode *current = reserveHead;
+    while (current) {
+        if (strcmp(current->firstName, firstName) == 0 && strcmp(current->lastName, lastName) == 0) {
+            PrintReservation(current);
+            return;
+        }
+        current = current->nextReserve;
+    }
+    cout << "No reservation found for " << firstName << " " << lastName << "." << endl;
+}
 
 void DeleteReservation(const char *firstName, const char *lastName) {
     reservationNode *current = reserveHead, *prev = nullptr;
