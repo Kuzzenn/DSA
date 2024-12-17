@@ -53,6 +53,8 @@ struct reservationNode {
     reservationNode *nextReserve;
 };
 
+reservationNode *reserveHead = nullptr;
+reservationNode *reserveTail = nullptr;
 
 
 //improvemnt if bigger dataset
@@ -158,6 +160,7 @@ void displaycities() {
         }
     }
 }
+
 
 reservationNode* MakeReserveNode(const char *firstName, const char *lastName, int tripType, const routeNode &routeForward, const routeNode &routeBack) {
     reservationNode *newNode = new reservationNode;
