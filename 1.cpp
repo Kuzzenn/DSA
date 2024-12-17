@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-
 #define MAXCITY 30
 #define MAXFLIGHT 100
 #define ROUNDTRIP 0
@@ -85,6 +84,7 @@ void addcity(const char *cityname) {
         citylist[index].nextarrival = nullptr;
     }
 }
+
 
 //setting a flight
 
@@ -269,6 +269,55 @@ void DeleteReservation(const char *firstName, const char *lastName) {
     }
     cout << "Reservation not found.\n";
 }
+//  display cities from one reachable city to another using DFS
+void displayreachablecity(char *city) {
+	
+	
+        bool isvisit[MAXCITY] = {false};  // checks and tracks visited cities by traversing
+  
+  
+        int firstindex = Hash(city);
+
+    if (citylist[firstindex].cityname == nullptr || strcmp (citylist[firstindex].cityname, city) != 0) {
+        
+	    	cout << "City " << city << " is not found in the database"<<endl;
+     
+	 
+	    return;
+    }
+
+    cout << "Cities reachable from " << city << ":"<<endl;
+
+    // DFS search
+    void DFS(int cityIndex) 
+	  { 
+           if (isvisit[cityIndex]) 
+		   
+		   return;  
+       
+	       isvisit[cityIndex] = true;
+
+        cout << "- " << citylist[cityIndex].cityname << endl;  // Display city
+
+           flightnode *currentFlight = citylist[cityIndex].nextdeparture;
+           
+         while (currentFlight)
+		  {
+		  	 int nextCityIndex = Hash(currentFlight->destinationcity);
+		  	 
+            if (!isvisit[nextCityIndex])
+			 {
+			 	
+                DFS(nextCityIndex);
+            }
+            
+            currentFlight = currentFlight->nextdeparture;
+        }
+    }
+
+    DFS(firstindex);  // Start DFS from the given city
+}
+
 
 
 
@@ -317,6 +366,9 @@ int main()
     
     displaydeparturelist("Skardu");
     displayarrivallist("Skardu");
+
+// Display cities reachable from Karachi
+    displayreachablecity("Karachi");
 
     return 0;
     
