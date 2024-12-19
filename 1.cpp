@@ -4,6 +4,8 @@ using namespace std;
 #define MAXFLIGHT 100
 #define ROUNDTRIP 0
 #define ONEWAY 1
+#define INF 999999 // value to represent infinity
+
 //setting flight databse;
 
 struct flightnode {
@@ -318,10 +320,116 @@ void displayreachablecity(char *city) {
     DFS(firstindex);  // Start DFS from the given city
 }
 
+// Display shortest path //NEED TO MAKE CHANGES!!!!!!!!!!!!!!
+void DisplayShortestPath(char *departCity,  char *arrivalCity) {
+    
+int start = Hash(departCity);
+    
+      int end = Hash(arrivalCity);
+
+    if (citylist[start].cityname == nullptr || strcmp(citylist[start].cityname, departCity) != 0 ||
+        
+            
+            citylist[end].cityname == nullptr || strcmp(citylist[end].cityname, arrivalCity) != 0) {
+       
+        cout << "One or both cities are not found in the database.\n";
+       
+       
+        return;
+   
+   
+    }
+
+    int distance[MAXCITY], parent[MAXCITY];
+
+          bool visited[MAXCITY] = {false};
+
+    for (int i = 0; i < MAXCITY; i++) {
+        distance[i] = INF;
+        parent[i] = -1;
+    }
+    distance[start] = 0;
 
 
+    for (int i = 0; i < MAXCITY; i++) {
+        
+         int minDist = INF, currentNode = -1;
+       
+       
+           for (int j = 0; j < MAXCITY; j++) {
+          
+            if (!visited[j] && distance[j] < minDist) {
+          
+                minDist = distance[j];
+          
+                currentNode = j;
+          
+            }
+        
+        }
 
+        if (currentNode == -1) break;
 
+        visited[currentNode] = true;
+
+        flightnode *currentFlight = citylist[currentNode].nextdeparture;
+
+        while (currentFlight) {
+          
+            int neighbor = Hash(currentFlight->destinationcity);
+          
+            if (!visited[neighbor] && distance[currentNode] + (currentFlight->timearrival - currentFlight->timedepart) < distance[neighbor]) {
+          
+                   distance[neighbor] = distance[currentNode] + (currentFlight->timearrival - currentFlight->timedepart);
+             
+                   parent[neighbor] = currentNode;
+            
+            }
+           
+            currentFlight = currentFlight->nextdeparture;
+        
+        }
+    }
+
+    if (distance[end] == INF) {
+       
+        cout << "No path exists between " << departCity << " and " << arrivalCity << ".\n";
+       
+        return;
+    
+    }
+
+    
+     cout << "Shortest path from " << departCity << " to " << arrivalCity << ":\n";
+    
+    int current = end;
+    
+    stack<int> path;
+    
+     while (current != -1) {
+     
+         path.push(current);
+      
+        current = parent[current];
+    
+    }
+
+    while (!path.empty()) {
+       
+        int cityIndex = path.top();
+       
+         path.pop();
+       
+       
+           cout << citylist[cityIndex].cityname;
+        
+        
+         if (!path.empty()) cout << " -> ";
+    }
+    
+    
+    cout << "\nTotal flight time: " << distance[end] << " minutes.\n";
+}
 
 
 int main()
@@ -369,6 +477,9 @@ int main()
 
 // Display cities reachable from Karachi
     displayreachablecity("Karachi");
+
+        DisplayShortestPath("Karachi", "Peshawar");
+
 
     return 0;
     
