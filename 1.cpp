@@ -271,164 +271,145 @@ void DeleteReservation(const char *firstName, const char *lastName) {
     }
     cout << "Reservation not found.\n";
 }
-//  display cities from one reachable city to another using DFS
-void displayreachablecity(char *city) {
-	
-	
-        bool isvisit[MAXCITY] = {false};  // checks and tracks visited cities by traversing
-  
-  
-        int firstindex = Hash(city);
+// DFS function for reachability
+void DFS(int cityIndex, bool visited[])
+ { 
+ 
+   
+    
+	 if (visited[cityIndex]) return;
+   
+      visited[cityIndex] = true;
+    
+	     cout << "- " << citylist[cityIndex].cityname << "\n";
 
-    if (citylist[firstindex].cityname == nullptr || strcmp (citylist[firstindex].cityname, city) != 0) {
+    flightnode *currentFlight = citylist[cityIndex].nextdeparture;
+    
+    while (currentFlight) {
         
-	    	cout << "City " << city << " is not found in the database"<<endl;
-     
-	 
-	    return;
-    }
-
-    cout << "Cities reachable from " << city << ":"<<endl;
-
-    // DFS search
-    void DFS(int cityIndex) 
-	  { 
-           if (isvisit[cityIndex]) 
-		   
-		   return;  
-       
-	       isvisit[cityIndex] = true;
-
-        cout << "- " << citylist[cityIndex].cityname << endl;  // Display city
-
-           flightnode *currentFlight = citylist[cityIndex].nextdeparture;
+		int nextCityIndex = Hash(currentFlight->destinationcity);
+         
+		 if (!visited[nextCityIndex]) {
            
-         while (currentFlight)
-		  {
-		  	 int nextCityIndex = Hash(currentFlight->destinationcity);
-		  	 
-            if (!isvisit[nextCityIndex])
-			 {
-			 	
-                DFS(nextCityIndex);
-            }
-            
-            currentFlight = currentFlight->nextdeparture;
+		    DFS(nextCityIndex, visited);
         }
+       
+	     currentFlight = currentFlight->nextdeparture;
     }
-
-    DFS(firstindex);  // Start DFS from the given city
 }
 
-// Display shortest path //NEED TO MAKE CHANGES!!!!!!!!!!!!!!
-void DisplayShortestPath(char *departCity,  char *arrivalCity) {
+void displayreachablecity(char *city) {
+     
+	  
+	       bool visited[MAXCITY] = {false};
     
-int start = Hash(departCity);
-    
-      int end = Hash(arrivalCity);
+	int startIndex = Hash(city);
 
-    if (citylist[start].cityname == nullptr || strcmp(citylist[start].cityname, departCity) != 0 ||
-        
-            
-            citylist[end].cityname == nullptr || strcmp(citylist[end].cityname, arrivalCity) != 0) {
-       
-        cout << "One or both cities are not found in the database.\n";
-       
-       
-        return;
-   
-   
+    if (citylist[startIndex].cityname == NULL || strcmp(citylist[startIndex].cityname, city) != 0)
+	 {
+     
+	     cout << "City \"" << city << "\" is not found in the database.\n";
+     
+	       return;
     }
 
-    int distance[MAXCITY], parent[MAXCITY];
+    
+	  cout << "Cities reachable from " << city << ":\n";
+    
+	
+	DFS(startIndex, visited);
+}
 
+
+// Display shortest path 
+void shortestroutedisplay(char *departCity, char *arrivalCity) {
+    int start = Hash(departCity);
+    
+       
+	   int end = Hash(arrivalCity);
+
+    if (citylist[start].cityname == NULL || strcmp(citylist[start].cityname, departCity) != 0 || citylist[end].cityname == NULL || strcmp(citylist[end].cityname, arrivalCity) != 0) {
+        
+		cout << "One or both cities are not found in the database"<<endl;
+        
+		  return;
+    }
+
+    
+	   int distance[MAXCITY],  parent[MAXCITY];
+   
           bool visited[MAXCITY] = {false};
 
-    for (int i = 0; i < MAXCITY; i++) {
-        distance[i] = INF;
-        parent[i] = -1;
+    for (int i = 0; i < MAXCITY; i++) 
+	{
+         
+		 distance[i] = INF;
+        
+		parent[i] = -1;
     }
-    distance[start] = 0;
+      
+	     distance[start] = 0;
 
-
-    for (int i = 0; i < MAXCITY; i++) {
-        
-         int minDist = INF, currentNode = -1;
-       
-       
-           for (int j = 0; j < MAXCITY; j++) {
-          
-            if (!visited[j] && distance[j] < minDist) {
-          
-                minDist = distance[j];
-          
+    for (int i = 0; i < MAXCITY; i++) 
+	{
+    
+	    int distanceminimum = INF, currentNode = -1;
+        for (int j = 0; j < MAXCITY; j++) {
+            if (!visited[j] && distance[j] < distanceminimum) {
+                distanceminimum = distance[j];
                 currentNode = j;
-          
             }
-        
         }
 
-        if (currentNode == -1) break;
+        if (currentNode == -1) 
+		break;
+        
+		visited[currentNode] = true;
 
-        visited[currentNode] = true;
 
         flightnode *currentFlight = citylist[currentNode].nextdeparture;
-
-        while (currentFlight) {
-          
-            int neighbor = Hash(currentFlight->destinationcity);
-          
-            if (!visited[neighbor] && distance[currentNode] + (currentFlight->timearrival - currentFlight->timedepart) < distance[neighbor]) {
-          
-                   distance[neighbor] = distance[currentNode] + (currentFlight->timearrival - currentFlight->timedepart);
-             
-                   parent[neighbor] = currentNode;
+      
+	    while (currentFlight)
+		 {
+             int neighbor = Hash(currentFlight->destinationcity);
             
+			if (!visited[neighbor] && distance[currentNode] + (currentFlight->timearrival - currentFlight->timedepart) < distance[neighbor])
+			 {
+            
+			     distance[neighbor] = distance[currentNode] + (currentFlight->timearrival - currentFlight->timedepart);
+             
+			    parent[neighbor] = currentNode;
             }
-           
             currentFlight = currentFlight->nextdeparture;
-        
         }
     }
 
     if (distance[end] == INF) {
-       
-        cout << "No path exists between " << departCity << " and " << arrivalCity << ".\n";
-       
+        cout << "No path exists between " << departCity << " and " << arrivalCity << endl;
+        
         return;
-    
     }
 
-    
-     cout << "Shortest path from " << departCity << " to " << arrivalCity << ":\n";
-    
-    int current = end;
+    cout << "Shortest path from " << departCity << " to " << arrivalCity << endl;
     
     stack<int> path;
     
-     while (current != -1) {
-     
-         path.push(current);
+	int current = end;
+    while (current != -1) {
       
-        current = parent[current];
-    
+	    path.push(current);
+      
+	    current = parent[current];
     }
 
     while (!path.empty()) {
-       
         int cityIndex = path.top();
-       
-         path.pop();
-       
-       
-           cout << citylist[cityIndex].cityname;
-        
-        
-         if (!path.empty()) cout << " -> ";
+        path.pop();
+        cout << citylist[cityIndex].cityname;
+        if (!path.empty()) cout << " -> ";
     }
     
-    
-    cout << "\nTotal flight time: " << distance[end] << " minutes.\n";
+    cout << "\nTotal flight time: " << distance[end] << " minutes."<<endl;
 }
 
 
@@ -478,7 +459,7 @@ int main()
 // Display cities reachable from Karachi
     displayreachablecity("Karachi");
 
-        DisplayShortestPath("Karachi", "Peshawar");
+        shortestroutedisplay("Karachi", "Peshawar");
 
 
     return 0;
