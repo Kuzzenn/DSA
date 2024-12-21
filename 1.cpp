@@ -1,4 +1,7 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<string>
+#include<stack>
+
 using namespace std;
 #define MAXCITY 30
 #define MAXFLIGHT 100
@@ -412,10 +415,9 @@ void shortestroutedisplay(char *departCity, char *arrivalCity) {
     cout << "\nTotal flight time: " << distance[end] << " minutes."<<endl;
 }
 
-
-int main()
+void readflightdata()
 {
-    //option for admin to add city
+        //option for admin to add city
     // Adding cities
     addcity("Karachi");
     addcity("Lahore");
@@ -445,6 +447,11 @@ int main()
         linkflight(flightlist[i].flight);
     }
 
+}
+
+int main()
+{
+    readflightdata();
     
     displaycities();
 
