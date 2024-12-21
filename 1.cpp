@@ -547,7 +547,8 @@ void displayAllRoutes(const char *departCity, const char *arrivalCity) {
 
 }
 
-void adminmode() {
+void adminmode() 
+{
     const int adminPassword = 1234; 
     int enteredPassword;
 
@@ -632,20 +633,25 @@ void adminmode() {
 
 
 
-
 #include <fstream>
 
-// Function to save passenger details to a file
-void SavePassengersToFile(int flightNo) {
+// save passenger details to a file
+void SavePassengersToFile(int flightNo) 
+{
     ofstream outFile("passenger_details.txt", ios::app); // Append mode
+    
     if (!outFile) {
+       
         cout << "Error opening file for writing.\n";
         return;
     }
 
     reservationNode *current = reserveHead;
-    bool found = false;
-    outFile << "Flight Number: " << flightNo << "\n";
+    
+     bool found = false;
+       
+       outFile << "Flight Number: " << flightNo << "\n";
+    
     outFile << "Passengers:\n";
 
     while (current) {
@@ -684,7 +690,7 @@ void ReadPassengersFromFile()
 
      cout << "\nReading Passenger Details from File:\n";
  
-    cout << "=====================================\n";
+    cout << "====================================="<<endl;
   
      while (getline(inFile, line)) {
   
@@ -700,7 +706,7 @@ int main()
 {
    readflightdata(); // Initialize cities and flights
 
-    while (true) {
+    while (true) {//taking user input for tge choiuce they want 
        
          cout << "\nMain Menu:\n";
        
@@ -737,11 +743,13 @@ int main()
            
             case 1:
                 displaycities();
+
                 break;
 
             case 2: 
             {
                 cout << "Enter city name: ";
+                
                 string city;
               
                 cin.ignore();
@@ -754,21 +762,30 @@ int main()
             }
 
             case 3: {
+                
                 cout << "Enter city name: ";
-                string city;
-                cin.ignore();
+                
+                 string city;
+                  cin.ignore();
+                
                 getline(cin, city);
-                displayarrivallist(city.c_str());
+                 
+                 displayarrivallist(city.c_str());
+                
                 break;
             }
 
             case 4: {
+               
                 cout << "Enter city name: ";
-                string city;
+               
+                 string city;
                 
+               
                 cin.ignore();
               
                 getline(cin, city);
+                 
                   displayreachablecity((char*)city.c_str());
               
                 break;
@@ -791,6 +808,7 @@ int main()
                 
                  getline(cin, arrivalCity);
 
+               
                 shortestroutedisplay((char*)departCity.c_str(), (char*)arrivalCity.c_str());
             
                 break;
@@ -800,7 +818,8 @@ int main()
             case 6: {
                 cout << "Enter departure city: ";
                 
-                string departCity;
+                
+                 string departCity;
                 
                  cin.ignore();
                 
@@ -812,22 +831,27 @@ int main()
             
             getline(cin, arrivalCity);
 
+                
                 displayAllRoutes(departCity.c_str(), arrivalCity.c_str());
+                
                 break;
             }
 
             case 7:
                 adminmode();
+                
                 break;
 
             case 8: {
                 cout << "Enter first name: ";
                 string firstName;
-                cin.ignore();
+                   cin.ignore();
                 getline(cin, firstName);
 
                 cout << "Enter last name: ";
-                string lastName;
+                
+                    string lastName;
+                
                 getline(cin, lastName);
 
                 cout << "Enter trip type (0 for Round Trip, 1 for One Way): ";
@@ -835,27 +859,38 @@ int main()
                 cin >> tripType;
 
                 routeNode routeForward, routeBack;
-                routeForward.nHops = 0;
-                routeBack.nHops = 0;
+                   routeForward.nHops = 0;
+                  routeBack.nHops = 0;
 
                 if (tripType == ROUNDTRIP) {
                     cout << "Enter number of hops for forward route: ";
-                    cin >> routeForward.nHops;
-                    cout << "Enter flight numbers for forward route: ";
+                   
+                     cin >> routeForward.nHops;
+                   
+                     cout << "Enter flight numbers for forward route: ";
                     for (int i = 0; i < routeForward.nHops; i++) {
+                   
                         cin >> routeForward.FlightNo[i];
+                   
                     }
 
-                    cout << "Enter number of hops for return route: ";
+                     
+                     cout << "Enter number of hops for return route: ";
                     cin >> routeBack.nHops;
+                    
                     cout << "Enter flight numbers for return route: ";
+                    
                     for (int i = 0; i < routeBack.nHops; i++) {
+                        
                         cin >> routeBack.FlightNo[i];
                     }
-                } else {
+                } else 
+                {
                     cout << "Enter number of hops for the route: ";
                     cin >> routeForward.nHops;
+                
                     cout << "Enter flight numbers for the route: ";
+                
                     for (int i = 0; i < routeForward.nHops; i++) {
                         cin >> routeForward.FlightNo[i];
                     }
