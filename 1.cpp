@@ -1,15 +1,15 @@
 #include<iostream>
 #include<string>
 #include<stack>
+#include <vector>
 
 using namespace std;
 #define MAXCITY 30
 #define MAXFLIGHT 100
 #define ROUNDTRIP 0
 #define ONEWAY 1
-#define INF 999999 // value to represent infinity
+#define INF 999999 
 
-//setting flight databse;
 
 struct flightnode {
     int flightno;            	
@@ -67,7 +67,7 @@ reservationNode *reserveTail = nullptr;
  int Hash(const char *cityName) {
     int hash = 0;
     while (*cityName) {
-        hash = (hash*31 + *cityName) % MAXCITY;//multiply by random number
+        hash = (hash*31 + *cityName) % MAXCITY;
         cityName++;
     }
     return hash;
@@ -75,12 +75,12 @@ reservationNode *reserveTail = nullptr;
 
 
 
-//adding city
+
 
 void addcity(const char *cityname) {
     int index = Hash(cityname);
 
-    if (!citylist[index].cityname)//condition to check if city already exists
+    if (!citylist[index].cityname)
     
      {
         citylist[index].cityname = new char[strlen(cityname) + 1];
@@ -91,7 +91,7 @@ void addcity(const char *cityname) {
 }
 
 
-//setting a flight
+
 
 flightnode* makeflightnode(int flightno, const char *startcity, int timedepart, const char *destinationcity, int timearrival) {
     
@@ -122,11 +122,11 @@ void linkflight(flightnode *flight) {
     int arrindex = Hash(flight->destinationcity);
 
     
-    flight->nextdeparture = citylist[depindex].nextdeparture;// Link to departure list
+    flight->nextdeparture = citylist[depindex].nextdeparture;
     citylist[depindex].nextdeparture = flight;
 
     
-    flight->nextarrival = citylist[arrindex].nextarrival;// Link to arrival list
+    flight->nextarrival = citylist[arrindex].nextarrival;
     citylist[arrindex].nextarrival = flight;
 }
 
@@ -274,7 +274,7 @@ void DeleteReservation(const char *firstName, const char *lastName) {
     }
     cout << "Reservation not found.\n";
 }
-// DFS function for reachability
+
 void DFS(int cityIndex, bool visited[])
  { 
  
@@ -324,7 +324,7 @@ void displayreachablecity(char *city) {
 }
 
 
-// Display shortest path 
+
 void shortestroutedisplay(char *departCity, char *arrivalCity) {
     int start = Hash(departCity);
     
@@ -417,8 +417,8 @@ void shortestroutedisplay(char *departCity, char *arrivalCity) {
 
 void readflightdata()
 {
-        //option for admin to add city
-    // Adding cities
+        
+    
     addcity("Karachi");
     addcity("Lahore");
     addcity("Islamabad");
@@ -431,7 +431,7 @@ void readflightdata()
     flightlist[1].flight = makeflightnode(102, "Karachi", 1200, "Islamabad", 1300);
     flightlist[2].flight = makeflightnode(103, "Karachi", 1400, "Peshawar", 1530);
     flightlist[3].flight = makeflightnode(104, "Karachi", 1600, "Skardu", 1830);
-    flightlist[4].flight = makeflightnode(105, "Islamabad", 1100, "Peshawar", 1230);
+    flightlist[4].flight = makeflightnode(105, "Islamabad", 1100, "Peshawar", 1120);
     flightlist[5].flight = makeflightnode(106, "Lahore", 1400, "Peshawar", 1600);
 
     
@@ -439,7 +439,7 @@ void readflightdata()
     flightlist[7].flight = makeflightnode(108, "Islamabad", 1400, "Karachi", 1500);
     flightlist[8].flight = makeflightnode(109, "Peshawar", 1600, "Karachi", 1730);
     flightlist[9].flight = makeflightnode(110, "Skardu", 1900, "Karachi", 2130);
-    flightlist[10].flight = makeflightnode(111, "Peshawar", 1300, "Islamabad", 1430);
+    flightlist[10].flight = makeflightnode(111, "Peshawar", 1300, "Islamabad", 1320);
     flightlist[11].flight = makeflightnode(112, "Peshawar", 1700, "Lahore", 1900);
 
     
@@ -448,6 +448,79 @@ void readflightdata()
     }
 
 }
+
+
+
+void findAllRoutes(int current, int end, vector<int> &currentRoute, vector<vector<int>> &allRoutes, bool visited[]) 
+{
+    if (current == end)
+        {
+            allRoutes.push_back(currentRoute); 
+            return;
+        }
+
+    visited[current] = true;
+
+    flightnode *currentFlight = citylist[current].nextdeparture;
+    while (currentFlight)
+        {
+            int nextCityIndex = Hash(currentFlight->destinationcity);
+            if (!visited[nextCityIndex])
+            {
+                currentRoute.push_back(nextCityIndex);
+                findAllRoutes(nextCityIndex, end, currentRoute, allRoutes, visited);
+                currentRoute.pop_back(); 
+            }
+            currentFlight = currentFlight->nextdeparture;
+        }
+
+    visited[current] = false; 
+}
+
+
+void displayAllRoutes(const char *departCity, const char *arrivalCity) {
+    int start = Hash(departCity);
+    int end = Hash(arrivalCity);
+
+    if (citylist[start].cityname == NULL || strcmp(citylist[start].cityname, departCity) != 0 || citylist[end].cityname == NULL || strcmp(citylist[end].cityname, arrivalCity) != 0) 
+        {
+        cout << "One or both cities are not found in the database." << endl;
+        return;
+        }
+
+    vector<int> currentRoute = {start};
+    vector<vector<int>> allRoutes;
+    bool visited[MAXCITY] = {false};
+
+    findAllRoutes(start, end, currentRoute, allRoutes, visited);
+
+    if (allRoutes.empty()) 
+    {
+        cout << "No routes found between " << departCity << " and " << arrivalCity << "." << endl;
+        return;
+    }
+
+    cout << "All possible routes from " << departCity << " to " << arrivalCity << ":" << endl;
+
+    for (vector<int> route : allRoutes) 
+    {
+        for (size_t i = 0; i < route.size(); ++i)
+        {
+            cout << citylist[route[i]].cityname;
+            if (i < route.size() - 1)
+            {
+                cout << " -> ";
+            }
+
+        }
+    cout << endl;
+}
+
+}
+
+
+
+
 
 int main()
 {
@@ -463,10 +536,13 @@ int main()
     displaydeparturelist("Skardu");
     displayarrivallist("Skardu");
 
-// Display cities reachable from Karachi
-    displayreachablecity("Karachi");
 
-        shortestroutedisplay("Karachi", "Peshawar");
+    displayreachablecity("Karachi");
+    cout << "\nAll Routes from Karachi to Peshawar:" << endl;
+    displayAllRoutes("Karachi", "Peshawar");
+
+
+    shortestroutedisplay("Karachi", "Peshawar");
 
 
     return 0;
