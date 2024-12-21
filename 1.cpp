@@ -633,31 +633,267 @@ void adminmode() {
 
 
 
+#include <fstream>
+
+// Function to save passenger details to a file
+void SavePassengersToFile(int flightNo) {
+    ofstream outFile("passenger_details.txt", ios::app); // Append mode
+    if (!outFile) {
+        cout << "Error opening file for writing.\n";
+        return;
+    }
+
+    reservationNode *current = reserveHead;
+    bool found = false;
+    outFile << "Flight Number: " << flightNo << "\n";
+    outFile << "Passengers:\n";
+
+    while (current) {
+        for (int i = 0; i < current->routeForward.nHops; i++) {
+            if (current->routeForward.FlightNo[i] == flightNo) {
+                outFile << current->firstName << " " << current->lastName << "\n";
+                found = true;
+                break;
+            }
+        }
+        current = current->nextReserve;
+    }
+
+    if (!found) {
+        outFile << "No passengers found on this flight.\n";
+    }
+
+    outFile << "===============================\n";
+    outFile.close();
+    cout << "Passenger details saved to file successfully.\n";
+}
+
+// Function to read passenger details from a file
+void ReadPassengersFromFile()
+ {
+    
+    ifstream inFile("passenger_details.txt");
+    if (!inFile) {
+
+        cout << "Error opening file for reading.\n";
+
+        return;
+    }
+
+    string line;
+
+     cout << "\nReading Passenger Details from File:\n";
+ 
+    cout << "=====================================\n";
+  
+     while (getline(inFile, line)) {
+  
+         cout << line << "\n";
+   
+    }
+    inFile.close();
+}
+
+
+
 int main()
 {
-    readflightdata();
+   readflightdata(); // Initialize cities and flights
+
+    while (true) {
+       
+         cout << "\nMain Menu:\n";
+       
+         cout << "1. Display all cities\n";
+           cout << "2. Display departures from a city\n";
+        
+           cout << "3. Display arrivals at a city\n";
+
+ cout << "4. Display reachable cities from a city\n";
     
-    displaycities();
+    cout << "5. Display shortest route between two cities\n";
+         cout << "6. Display all routes between two cities\n";
+     
+           cout << "7. Admin mode\n";
+     
+      cout << "8. Add reservation\n";
+        
+        cout << "9. Display all reservations\n";
+      
+           cout << "10. Display a passenger's schedule\n";
+      
+          cout << "11. Delete a reservation\n";
+      
+        cout << "12. Exit\n";
+       
+        cout << "Enter your choice: ";
 
-    
-    displaydeparturelist("Karachi");
-    displayarrivallist("Karachi");
+        int choice;
+       
+        cin >> choice;
 
-    
-    displaydeparturelist("Skardu");
-    displayarrivallist("Skardu");
+        switch (choice) 
+        {
+           
+            case 1:
+                displaycities();
+                break;
 
+            case 2: 
+            {
+                cout << "Enter city name: ";
+                string city;
+              
+                cin.ignore();
+              
+                getline(cin, city);
+              
+                displaydeparturelist(city.c_str());
+              
+                break;
+            }
 
-    displayreachablecity("Karachi");
-    cout << "\nAll Routes from Karachi to Peshawar:" << endl;
-    displayAllRoutes("Karachi", "Peshawar");
+            case 3: {
+                cout << "Enter city name: ";
+                string city;
+                cin.ignore();
+                getline(cin, city);
+                displayarrivallist(city.c_str());
+                break;
+            }
 
+            case 4: {
+                cout << "Enter city name: ";
+                string city;
+                
+                cin.ignore();
+              
+                getline(cin, city);
+                  displayreachablecity((char*)city.c_str());
+              
+                break;
+            }
 
-    shortestroutedisplay("Karachi", "Peshawar");
-    adminmode();
+            case 5: {
+                 
+                 cout << "Enter departure city: ";
+                   
+                    string departCity;
+                
+                 cin.ignore();
+                
+                 getline(cin, departCity);
 
+                
+                 cout << "Enter arrival city: ";
+                
+                 string arrivalCity;
+                
+                 getline(cin, arrivalCity);
 
+                shortestroutedisplay((char*)departCity.c_str(), (char*)arrivalCity.c_str());
+            
+                break;
+            
+            }
+
+            case 6: {
+                cout << "Enter departure city: ";
+                
+                string departCity;
+                
+                 cin.ignore();
+                
+                getline(cin, departCity);
+
+                cout << "Enter arrival city: ";
+                 
+                 string arrivalCity;
+            
+            getline(cin, arrivalCity);
+
+                displayAllRoutes(departCity.c_str(), arrivalCity.c_str());
+                break;
+            }
+
+            case 7:
+                adminmode();
+                break;
+
+            case 8: {
+                cout << "Enter first name: ";
+                string firstName;
+                cin.ignore();
+                getline(cin, firstName);
+
+                cout << "Enter last name: ";
+                string lastName;
+                getline(cin, lastName);
+
+                cout << "Enter trip type (0 for Round Trip, 1 for One Way): ";
+                int tripType;
+                cin >> tripType;
+
+                routeNode routeForward, routeBack;
+                routeForward.nHops = 0;
+                routeBack.nHops = 0;
+
+                if (tripType == ROUNDTRIP) {
+                    cout << "Enter number of hops for forward route: ";
+                    cin >> routeForward.nHops;
+                    cout << "Enter flight numbers for forward route: ";
+                    for (int i = 0; i < routeForward.nHops; i++) {
+                        cin >> routeForward.FlightNo[i];
+                    }
+
+                    cout << "Enter number of hops for return route: ";
+                    cin >> routeBack.nHops;
+                    cout << "Enter flight numbers for return route: ";
+                    for (int i = 0; i < routeBack.nHops; i++) {
+                        cin >> routeBack.FlightNo[i];
+                    }
+                } else {
+                    cout << "Enter number of hops for the route: ";
+                    cin >> routeForward.nHops;
+                    cout << "Enter flight numbers for the route: ";
+                    for (int i = 0; i < routeForward.nHops; i++) {
+                        cin >> routeForward.FlightNo[i];
+                    }
+                }
+
+                AddReservation(firstName.c_str(), lastName.c_str(), tripType, routeForward, routeBack);
+                break;
+            }
+
+            case 9:
+                PrintAllReservations();
+                break;
+
+            case 10:
+                PrintSchedule();
+                break;
+
+            case 11: {
+                cout << "Enter first name: ";
+                string firstName;
+                cin.ignore();
+                getline(cin, firstName);
+
+                cout << "Enter last name: ";
+                string lastName;
+                getline(cin, lastName);
+
+                DeleteReservation(firstName.c_str(), lastName.c_str());
+                break;
+            }
+
+            case 12:
+                cout << "Exiting program. Goodbye!\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
     return 0;
-    
-    
 }
