@@ -547,6 +547,88 @@ void displayAllRoutes(const char *departCity, const char *arrivalCity) {
 
 }
 
+void adminmode() {
+    const int adminPassword = 1234; 
+    int enteredPassword;
+
+    cout << "Enter admin password: ";
+    cin >> enteredPassword;
+
+    if (enteredPassword != adminPassword) {
+        cout << "Incorrect password. Access denied.\n";
+        return;
+    }
+
+    cout << "\nAdmin Mode Access Granted\n";
+
+    while (true) {
+        cout << "\nAdmin Options:\n";
+        cout << "1. Add City\n";
+        cout << "2. Add Flight\n";
+        cout << "3. Display All Cities\n";
+        cout << "4. Exit Admin Mode\n";
+        cout << "Enter your choice: ";
+
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1: 
+            {
+                cout << "Enter city name: ";
+                string cityName;
+                cin.ignore();
+                getline(cin, cityName);
+                addcity(cityName.c_str());
+                cout << "City \"" << cityName << "\" added successfully.\n";
+                break;
+            }
+            case 2: {
+                int flightNo, timeDepart, timeArrival;
+                string startCity, destinationCity;
+
+                cout << "Enter flight number: ";
+                cin >> flightNo;
+                cin.ignore();
+
+                cout << "Enter departure city: ";
+                getline(cin, startCity);
+
+                cout << "Enter departure time (in 24-hour format, e.g., 1400): ";
+                cin >> timeDepart;
+                cin.ignore();
+
+                cout << "Enter destination city: ";
+                getline(cin, destinationCity);
+
+                cout << "Enter arrival time (in 24-hour format, e.g., 1600): ";
+                cin >> timeArrival;
+
+    
+                if (!citylist[Hash(startCity.c_str())].cityname || !citylist[Hash(destinationCity.c_str())].cityname) {
+                    cout << "One or both cities do not exist. Please add the cities first.\n";
+                    break;
+                }
+
+                
+                flightnode* newFlight = makeflightnode(flightNo, startCity.c_str(), timeDepart, destinationCity.c_str(), timeArrival);
+                linkflight(newFlight);
+                cout << "Flight " << flightNo << " from " << startCity << " to " << destinationCity << " added successfully.\n";
+                break;
+            }
+            case 3:
+                displaycities();
+                break;
+            case 4:
+                cout << "Exiting Admin Mode.\n";
+                return;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+                break;
+        }
+    }
+}
+
 
 
 
@@ -572,6 +654,7 @@ int main()
 
 
     shortestroutedisplay("Karachi", "Peshawar");
+    adminmode();
 
 
     return 0;
