@@ -135,11 +135,25 @@ void displaydeparturelist(const char *cityname) {
     int index = Hash(cityname);
     flightnode *current = citylist[index].nextdeparture;
 
-    cout << "Departures from " << cityname << ":\n";
+    vector<flightnode*> flights;
+
     while (current) {
-        cout << "Flight " << current->flightno << " to " << current->destinationcity
-             << " at " << current->timedepart << "\n";
+        flights.push_back(current);
         current = current->nextdeparture;
+    }
+
+    for (size_t i = 0; i < flights.size() - 1; i++) {
+        for (size_t j = 0; j < flights.size() - i - 1; j++) {
+            if (flights[j]->timedepart > flights[j + 1]->timedepart) {
+                swap(flights[j], flights[j + 1]);
+            }
+        }
+    }
+
+    cout << "Departures from " << cityname << ":\n";
+    for (size_t i = 0; i < flights.size(); i++) {
+        cout << "Flight " << flights[i]->flightno << " to " << flights[i]->destinationcity
+             << " at " << flights[i]->timedepart << "\n";
     }
 }
 
@@ -147,13 +161,28 @@ void displayarrivallist(const char *cityname) {
     int index = Hash(cityname);
     flightnode *current = citylist[index].nextarrival;
 
-    cout << "\nArrivals at " << cityname << ":\n";
+    vector<flightnode*> flights;
+
     while (current) {
-        cout << "Flight No: " << current->flightno << ", Departure: " << current->startcity 
-                  << " at " << current->timedepart << " (Arrival: " << current->timearrival << ")\n";
+        flights.push_back(current);
         current = current->nextarrival;
     }
+
+    for (size_t i = 0; i < flights.size() - 1; i++) {
+        for (size_t j = 0; j < flights.size() - i - 1; j++) {
+            if (flights[j]->timearrival > flights[j + 1]->timearrival) {
+                swap(flights[j], flights[j + 1]);
+            }
+        }
+    }
+
+    cout << "\nArrivals at " << cityname << ":\n";
+    for (size_t i = 0; i < flights.size(); i++) {
+        cout << "Flight No: " << flights[i]->flightno << ", Departure: " << flights[i]->startcity 
+             << " at " << flights[i]->timedepart << " (Arrival: " << flights[i]->timearrival << ")\n";
+    }
 }
+
 
 
 
